@@ -18,8 +18,10 @@ homicides <- read.csv("../data/homicide-data.csv")
 ```{r}
 #update the date columns
 homicides <- homicides %>% 
-  mutate(reported_date = ymd(reported_date)) %>% 
-  mutate(year_mo = format(as.Date(reported_date), "%Y-%m")) %>% 
+  mutate(reported_date = ymd(reported_date),
+         month = month(reported_date, label=TRUE)) %>%
+  mutate(year_mo = format(as.Date(reported_date), "%Y-%m"),
+         warm_mo = month %in% c("May", "Jun", "Jul", "Aug", "Sep", "Oct")) %>% 
   mutate(year_mo = ym(year_mo))
 ```
 
@@ -32,16 +34,16 @@ balt_homs <- homicides %>%
 
 ```{r}
 #count up monthly homicides in Baltimore
-monthly_homs <- balt_homs %>% group_by(year_mo) %>% count()
+monthly_homs <- balt_homs %>% group_by(year_mo, warm_mo) %>% count()
 ```
 
 ```{r}
 #plot the data
 ggplot(monthly_homs, aes(x=year_mo)) +
-  geom_histogram(aes(y=n), stat="identity") +
+  geom_histogram(aes(y=n, fill=warm_mo), stat="identity") +
   scale_x_date(name = "Date",
                date_labels = "%Y") +
-  geom_vline(xintercept = as.numeric(as.Date("2015-04-12")),
+  geom_vline(xintercept = as.Date("2015-04-12"),
              linetype = "dashed",
              col = "red",
              size=2)
