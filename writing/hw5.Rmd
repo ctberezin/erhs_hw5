@@ -37,7 +37,7 @@ balt_homs <- homicides %>%
 monthly_homs <- balt_homs %>% group_by(year_mo, warm_mo) %>% count()
 ```
 
-```{r}
+```{r, fig.height=2, fig.width=10}
 #plot the data
 ggplot(monthly_homs, aes(x=year_mo)) +
   geom_histogram(aes(y=n, fill=warm_mo), stat="identity") +
@@ -46,5 +46,5 @@ ggplot(monthly_homs, aes(x=year_mo)) +
   geom_vline(xintercept = as.Date("2015-04-12"),
              linetype = "dashed",
              col = "red",
-             size=2)
+             size=1.5)
 ```
