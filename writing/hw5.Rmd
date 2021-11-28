@@ -11,12 +11,16 @@ library(lubridate)
 ```
 
 ```{r}
-list.files("data")
-homicides <- read.csv("data/homicide-data.csv")
+homicides <- read.csv("../data/homicide-data.csv")
 ```
 
 ```{r}
 homicides <- homicides %>% 
   mutate(reported_date = ymd(reported_date)) %>% 
-  mutate(month = month(reported_date, label=TRUE, abbr=FALSE))
+  mutate(MonthYear = format(as.Date(reported_date), "%m-%y"))
+
+balt_homs <- homicides %>% 
+  unite("Location", city:state, sep=", ") %>% 
+  filter(Location == "Baltimore, MD")
 ```
+
