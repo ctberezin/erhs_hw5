@@ -46,5 +46,8 @@ ggplot(monthly_homs, aes(x=year_mo)) +
   geom_vline(xintercept = as.Date("2015-04-12"),
              linetype = "dashed",
              col = "red",
-             size=1.5)
+             size=1.5) +
+  labs(title = "Homicides in Baltimore, MD",
+       y = "Monthly Homicides") +
+  theme(legend.title = element_blank())
 ```
