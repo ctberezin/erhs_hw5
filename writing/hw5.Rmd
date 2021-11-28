@@ -58,10 +58,14 @@ ggplot(monthly_homs, aes(x=year_mo, y=n)) +
   geom_text(aes(x=arrest, y=40),
             label="Arrest of\nFreddie Gray",
             hjust=1,
-            nudge_x=-20) +
+            nudge_x=-30,
+            col = "white",
+            check_overlap = TRUE) +
   labs(title = "Homicides in Baltimore, MD",
        y = "Monthly Homicides") +
+  theme_dark() +
   theme(legend.title = element_blank(),
-        legend.position="bottom")
+        legend.position="bottom") +
+  scale_fill_manual(values = c("grey80", "lightblue"))
 ```
 
