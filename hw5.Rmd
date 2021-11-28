@@ -6,7 +6,17 @@ output: html_document
 ---
 
 ```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
 list.files("data")
 homicides <- read.csv("data/homicide-data.csv")
-head(homicides, 5)
+```
+
+```{r}
+homicides <- homicides %>% 
+  mutate(reported_date = ymd(reported_date)) %>% 
+  mutate(month = month(reported_date, label=TRUE, abbr=FALSE))
 ```
