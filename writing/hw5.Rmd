@@ -11,25 +11,38 @@ library(lubridate)
 ```
 
 ```{r}
+#read in the data
 homicides <- read.csv("../data/homicide-data.csv")
 ```
 
 ```{r}
+#update the date columns
 homicides <- homicides %>% 
   mutate(reported_date = ymd(reported_date)) %>% 
   mutate(year_mo = format(as.Date(reported_date), "%Y-%m")) %>% 
   mutate(year_mo = ym(year_mo))
+```
 
+```{r}
+#filter to just Baltimore
 balt_homs <- homicides %>% 
   unite("Location", city:state, sep=", ") %>% 
   filter(Location == "Baltimore, MD")
 ```
 
 ```{r}
+#count up monthly homicides in Baltimore
 monthly_homs <- balt_homs %>% group_by(year_mo) %>% count()
+```
 
-ggplot(monthly_homs, aes(x=year_mo, y=n)) +
-  geom_histogram(stat="identity") +
+```{r}
+#plot the data
+ggplot(monthly_homs, aes(x=year_mo)) +
+  geom_histogram(aes(y=n), stat="identity") +
   scale_x_date(name = "Date",
-               date_labels = "%Y")
+               date_labels = "%Y") +
+  geom_vline(xintercept = as.numeric(as.Date("2015-04-12")),
+             linetype = "dashed",
+             col = "red",
+             size=2)
 ```
