@@ -22,7 +22,10 @@ homicides <- homicides %>%
          month = month(reported_date, label=TRUE)) %>%
   mutate(year_mo = format(as.Date(reported_date), "%Y-%m"),
          warm_mo = month %in% c("May", "Jun", "Jul", "Aug", "Sep", "Oct")) %>% 
-  mutate(year_mo = ym(year_mo))
+  mutate(year_mo = ym(year_mo),
+         season = fct_recode(as.factor(warm_mo),
+                              Summer = "TRUE",
+                              Winter = "FALSE"))
 ```
 
 ```{r}
@@ -34,20 +37,31 @@ balt_homs <- homicides %>%
 
 ```{r}
 #count up monthly homicides in Baltimore
-monthly_homs <- balt_homs %>% group_by(year_mo, warm_mo) %>% count()
+monthly_homs <- balt_homs %>% group_by(year_mo, season) %>% count()
 ```
 
-```{r, fig.height=2, fig.width=10}
+```{r}
+#save the date of Freddie Gray's arrest
+arrest <- as.Date("2015-04-12")
+```
+
+```{r, fig.height=3, fig.width=10}
 #plot the data
-ggplot(monthly_homs, aes(x=year_mo)) +
-  geom_histogram(aes(y=n, fill=warm_mo), stat="identity") +
+ggplot(monthly_homs, aes(x=year_mo, y=n)) +
+  geom_col(aes(fill=factor(season, levels=c("Summer", "Winter")))) +
   scale_x_date(name = "Date",
                date_labels = "%Y") +
-  geom_vline(xintercept = as.Date("2015-04-12"),
+  geom_vline(xintercept = arrest,
              linetype = "dashed",
              col = "red",
              size=1.5) +
+  geom_text(aes(x=arrest, y=40),
+            label="Arrest of\nFreddie Gray",
+            hjust=1,
+            nudge_x=-20) +
   labs(title = "Homicides in Baltimore, MD",
        y = "Monthly Homicides") +
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),
+        legend.position="bottom")
 ```
+
