@@ -17,10 +17,16 @@ homicides <- read.csv("../data/homicide-data.csv")
 ```{r}
 homicides <- homicides %>% 
   mutate(reported_date = ymd(reported_date)) %>% 
-  mutate(MonthYear = format(as.Date(reported_date), "%m-%y"))
+  mutate(year_mo = format(as.Date(reported_date), "%Y-%m"))
 
 balt_homs <- homicides %>% 
   unite("Location", city:state, sep=", ") %>% 
   filter(Location == "Baltimore, MD")
 ```
 
+```{r}
+monthly_homs <- balt_homs %>% group_by(year_mo) %>% count()
+
+ggplot(monthly_homs, aes(x=year_mo, y=n)) +
+  geom_histogram(stat="identity")
+```
